@@ -1,0 +1,24 @@
+!/usr/bin/env bash
+# runfile.sh - run a file based on its extension and list all matching files
+
+set -euo pipefail
+
+read -rp "Enter file name (with extension): " filename
+
+
+# Expand tilde or vars if any
+filename="${filename}"
+echo "Generating hash for $filename"
+
+ext="${filename##*.}"
+
+ext2john="${ext}2john"
+#hashing
+$ext2john $filename >> ebpass.txt
+
+#Converting to uppercase
+upper=$(echo "$ext" | tr '[:lower:]' '[:upper:]')
+
+echo "Cracking the password"
+#cracking
+john --wordlist=/usr/share/wordlists/rockyou.txt --format=$upper ebpass.txt
